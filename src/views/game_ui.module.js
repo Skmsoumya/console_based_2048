@@ -7,7 +7,7 @@ const game_ui = {
 
     */
     renderGameBoard(gameState) {
-        
+
     }
 };
 

@@ -18,7 +18,8 @@ const game_controller = {
         return (
             validFormatRegex.exec(gameBoardSize) &&
             validNumberRegex.exec(gameBoardSize[0]) &&
-            gameBoardSize[0] === gameBoardSize[2]
+            gameBoardSize[0] === gameBoardSize[2] &&
+            gameBoardSize[0] !== "0"
         );
     },
     /* 
@@ -59,8 +60,8 @@ const game_controller = {
             this.getGameState = getGameState;
             this.performAction = performAction;
             this.actions = actions;
-
-            initiateDataModel();
+            
+            initiateDataModel(gameGoal, parseInt(gameBoardSize[0]));
             initiateUserInputInterface(this.handleUserInput.bind(this));
             renderGameBoard(getGameState());
         }
