@@ -1,0 +1,11 @@
+{
+  "name": "console_based_2048",
+  "version": "1.0.0",
+  "description": "A 2048 game",
+  "main": "index.js",
+  "author": "soumyakishormishra@gmail.com",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
