@@ -1,10 +1,12 @@
 module.exports = {
     errorHandler: (error) => {
-        console.log(error);
-        switch (error.type) {
+        switch (error.message) {
             case "INVALID_PARAMS":
-                console.error("invalid Params Passed");
+                console.error("Invalid parameters passed to controller.");
                 console.error(err);
+                break;
+            case "canceled":
+                console.error("Thank you for playing the game.");
                 break;
             default:
                 console.error(error);

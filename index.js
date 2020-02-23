@@ -1,9 +1,9 @@
-const gameController = require("./src/game_controller/game_controller.module");
-const gameDataModel = require("./src/data_model/data_model.module");
-const gameUI = require("./src/views/game_ui.module");
-const userInputInterface = require("./src/views/user_input_interface.module");
-const gameWonUI = require("./src/views/game_won.module");
-const gameLostUI = require("./src/views/game_lost.module");
+const gameController = require("./src/game_controller/game.controller");
+const gameDataModel = require("./src/data_model/data.model");
+const gameUI = require("./src/views/game_ui.view");
+const userInputInterface = require("./src/views/user_input_interface.view");
+const gameWonUI = require("./src/views/game_won.view");
+const gameLostUI = require("./src/views/game_lost.view");
 
 const {errorHandler} = require("./src/utils/error_handler.module");
 

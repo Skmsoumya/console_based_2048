@@ -1,4 +1,4 @@
-const {errorHandler, errorTypes} = require("../utils/error_handler.module");
+const {errorTypes} = require("../utils/error_handler.module");
 
 const game_controller = {
     /* 
@@ -146,7 +146,6 @@ const game_controller = {
             this.gameLostRenderer();
             process.exit();
         }
-
         else {
             this.addNumberToBoard();
             this._nextTurn();

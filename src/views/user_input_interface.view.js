@@ -1,4 +1,5 @@
 const prompt = require("prompt");
+const {errorHandler} = require("../utils/error_handler.module");
 
 const user_input_interface = {
     /* 
@@ -86,11 +87,8 @@ const user_input_interface = {
                     console.log("Invalid Input");
             }
         }).catch((err) => {
-            throw err;
+            errorHandler(err);
         });
-    },
-    notifyInvalidInput() {
-
     }
 };
 
