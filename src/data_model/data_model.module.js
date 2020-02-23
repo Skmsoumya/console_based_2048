@@ -1,5 +1,3 @@
-const { errorTypes } = require("../utils/error_handler.module");
-
 data_model = {
     state: {
         gameBoardSize: null,            // A number representing the row/column size of the board.
@@ -92,16 +90,25 @@ data_model = {
     /* 
         @description: Get the current board state represented by a matrix.
         
-        @returns {array} A matrix representation of the current state of game board.
+        @return {array} A matrix representation of the current state of game board.
     */
-    getBoardState() {
+    getGameState() {
         return this.state.game;
+    },
+    /* 
+        @description: A function to get the game goal number.
+
+        @return {number}: The number for the game goal.
+    */
+    getGameGoal() {
+        return this.state.gameGoal;
     }
 };
 
 module.exports = {
     init:           data_model.init.bind(data_model),
     performAction:  data_model.performAction.bind(data_model),
-    getBoardState:  data_model.getBoardState.bind(data_model),
+    getGameState:   data_model.getGameState.bind(data_model),
+    getGameGoal:    data_model.getGameGoal.bind(data_model),
     actions:        data_model.actions,
 }

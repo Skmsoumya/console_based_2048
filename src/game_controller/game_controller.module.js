@@ -1,3 +1,5 @@
+const {errorHandler, errorTypes} = require("../utils/error_handler.module");
+
 const game_controller = {
     /* 
             @description:               Checks if the game goal is a valid power of 2.
@@ -57,14 +59,16 @@ const game_controller = {
             !(initiateUserInputInterface && typeof initiateUserInputInterface === "function") ||
             !(actions && typeof actions === "object")
         ) {
-            this.getGameState = getGameState;
-            this.performAction = performAction;
-            this.actions = actions;
-            
-            initiateDataModel(gameGoal, parseInt(gameBoardSize[0]));
-            initiateUserInputInterface(this.handleUserInput.bind(this));
-            renderGameBoard(getGameState());
+            errorTypes.INVALID_PARAMS();
         }
+
+        this.getGameState = getGameState;
+        this.performAction = performAction;
+        this.actions = actions;
+        
+        initiateDataModel(gameGoal, parseInt(gameBoardSize[0]));
+        initiateUserInputInterface(this.handleUserInput.bind(this));
+        renderGameBoard(getGameState(), gameGoal);
     },
     /* 
         @description: A callback function for handling user input.

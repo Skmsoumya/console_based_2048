@@ -1,3 +1,5 @@
+const readline = require("readline");
+
 const user_input_interface = {
     /* 
         @description: Setup listeners for user input.
@@ -7,7 +9,7 @@ const user_input_interface = {
         @returns {undefined}
     */
     init(handleUserInput) {
-
+        
     }
 };
 
