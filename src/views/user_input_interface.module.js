@@ -95,6 +95,5 @@ const user_input_interface = {
 };
 
 module.exports = {
-    activateInputListener:  user_input_interface.activateInputListener.bind(user_input_interface),
-    notifyInvalidInput:     user_input_interface.notifyInvalidInput.bind(user_input_interface),
+    activateInputListener:  user_input_interface.activateInputListener.bind(user_input_interface)
 };

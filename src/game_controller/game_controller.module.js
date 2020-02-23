@@ -45,8 +45,12 @@ const game_controller = {
                 - @required {function} performAction:     Function to perform an action on game state.
                 - @required {function} renderGameBoard:   Function to render the game board in UI.
                 - @required {function} activateUserInputListener: Function to activate the user input listener.
-                - @required {function} notifyInvalidUserInput: Function to notify user about invalid input.
-                - @required {function} getGameGoal:     A function to get the game goal number.
+                - @required {function} getGameGoal:       A function to get the game goal number.
+                - @required {function} addNumberToBoard:  A function to add a new number to the board.
+                - @required {function} checkIfGameWon:    A function to check if the user already reached the goal.
+                - @required {function} isNextMoveNotPossible:    A function to check if the next move is not possible.
+                - @required {function} gameWonRenderer:    A function to render the game won UI
+                - @required {function} gameLostRenderer:    A function to render the UI for game over state.
                 - @required {object} actions:           A list of actions that can be performed on the board.
         @returns {undefined}
     */
@@ -58,7 +62,11 @@ const game_controller = {
         performAction,
         renderGameBoard,
         activateUserInputListener,
-        notifyInvalidUserInput,
+        addNumberToBoard,
+        checkIfGameWon,
+        isNextMoveNotPossible,
+        gameWonRenderer,
+        gameLostRenderer,
         actions,
         getGameGoal
     }) {
@@ -70,7 +78,11 @@ const game_controller = {
             !(performAction && typeof performAction === "function") ||
             !(renderGameBoard && typeof renderGameBoard === "function") ||
             !(activateUserInputListener && typeof activateUserInputListener === "function") ||
-            !(notifyInvalidUserInput && typeof notifyInvalidUserInput === "function") ||
+            !(addNumberToBoard && typeof addNumberToBoard === "function") ||
+            !(checkIfGameWon && typeof checkIfGameWon === "function") ||
+            !(isNextMoveNotPossible && typeof isNextMoveNotPossible === "function") ||
+            !(gameWonRenderer && typeof gameWonRenderer === "function") ||
+            !(gameLostRenderer && typeof gameLostRenderer === "function") ||
             !(actions && typeof actions === "object")
         ) {
             errorTypes.INVALID_PARAMS();
@@ -81,8 +93,12 @@ const game_controller = {
         this.actions = actions;
         this.getGameGoal = getGameGoal;
         this.activateUserInputListener = activateUserInputListener;
-        this.notifyInvalidUserInput = notifyInvalidUserInput;
+        this.addNumberToBoard = addNumberToBoard;
         this.renderGameBoard = renderGameBoard;
+        this.checkIfGameWon = checkIfGameWon;
+        this.isNextMoveNotPossible = isNextMoveNotPossible;
+        this.gameWonRenderer = gameWonRenderer;
+        this.gameLostRenderer = gameLostRenderer;
         
         initiateDataModel(gameGoal, parseInt(gameBoardSize[0]));
         this._nextTurn();
@@ -119,8 +135,22 @@ const game_controller = {
                 console.log("Invalid Input");
                 break;
         }
+        if(this.checkIfGameWon()) {
+            this.renderGameBoard(this.getGameState(), this.getGameGoal());
+            this.gameWonRenderer();
+            process.exit();
+        }
 
-        this._nextTurn();
+        if(this.isNextMoveNotPossible()) {
+            this.renderGameBoard(this.getGameState(), this.getGameGoal());
+            this.gameLostRenderer();
+            process.exit();
+        }
+
+        else {
+            this.addNumberToBoard();
+            this._nextTurn();
+        }
     }
 };
 

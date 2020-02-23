@@ -51,25 +51,12 @@ data_model = {
         }
     },
     /* 
-        @description:               Random add twos and Fours to a random unoccupied location on the game board.
-        @return {undefined}
-    */
-    _randomAddTwosFours() {
-        let {
-            col: randomUnOccupiedColumn,
-            row: randomUnOccupiedRow
-        } = this._getARandomUnOccupiedPosition();
-        let randomNumberToAdd = Math.ceil(Math.random() * 2) * 2;
-        this.state.game[randomUnOccupiedRow][randomUnOccupiedColumn] = randomNumberToAdd;
-        this.state.occupiedPositions[`${randomUnOccupiedRow}_${randomUnOccupiedColumn}`] = randomNumberToAdd;
-    },
-    /* 
         @description:               Function to add the initial two random (2 or 4) to the board at random position.
         @return {undefined}
     */
     _addInitialNumbers() {
-        this._randomAddTwosFours();
-        this._randomAddTwosFours();
+        this.randomAddANumber();
+        this.randomAddANumber();
     },
     /* 
         @description: Merge the game board towerds the top
@@ -77,46 +64,47 @@ data_model = {
     */
     _mergeGameUp() {
         const currentGameState = this.state.game;
-        for(let i = 0; i < this.state.gameBoardSize; i++) {
+        for(let col = 0; col < this.state.gameBoardSize; col++) {
             let lastEncounteredVal = null;
             let lastEncounteredValPos = null;
             let emptyPosQueue = [];
+            let lastValueMerged = false;
 
-            for(let j = 0; j < this.state.gameBoardSize; j++) {
+            for(let row = 0; row < this.state.gameBoardSize; row++) {
                 
-                let currentVal = currentGameState[j][i];
-                let rowPos = j;
-                let colPos = i;
+                let currentVal = currentGameState[row][col];
+                let rowPos = row;
+                let colPos = col;
 
-                if(currentGameState[j][i]) {
-                    if(lastEncounteredVal && lastEncounteredVal === currentVal) {
+                if(currentGameState[row][col]) {
+                    if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
                         delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
-                            row: rowPos,
-                            col: colPos
+                            rowPos: rowPos,
+                            colPos: colPos
                         });
 
                         lastEncounteredVal = lastEncounteredVal + currentVal;
                         currentGameState[lastEncounteredValPos.row][lastEncounteredValPos.col] = lastEncounteredVal;
+                        lastValueMerged = true;
                     }
                     else {
                         if(emptyPosQueue.length) {
                             let pos = emptyPosQueue.shift();
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
                             this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
-                            
-                            emptyPosQueue.push({
-                                row: i,
-                                col: j
-                            });
 
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
     
-                            currentGameState[j][i] = undefined;
-                            delete this.state.occupiedPositions[`${j}_${i}`];
+                            currentGameState[row][col] = undefined;
+                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            emptyPosQueue.push({
+                                rowPos: row,
+                                colPos: col
+                            });
                         }
 
                         
@@ -125,11 +113,12 @@ data_model = {
                             row: rowPos,
                             col: colPos
                         }
+                        lastValueMerged = false;
                     }
                     
                 }
                 else {
-                    emptyPosQueue.push({rowPos: j, colPos: i});
+                    emptyPosQueue.push({rowPos: row, colPos: col});
                 }
             }
         }
@@ -140,30 +129,32 @@ data_model = {
     */
     _mergeGameLeft() {
         const currentGameState = this.state.game;
-        for(let i = 0; i < this.state.gameBoardSize; i++) {
+        for(let row = 0; row < this.state.gameBoardSize; row++) {
             let lastEncounteredVal = null;
             let lastEncounteredValPos = null;
             let emptyPosQueue = [];
+            let lastValueMerged = false;
 
-            for(let j = 0; j < this.state.gameBoardSize; j++) {
+            for(let col = 0; col < this.state.gameBoardSize; col++) {
                 
-                let currentVal = currentGameState[i][j];
+                let currentVal = currentGameState[row][col];
                 
-                let rowPos = i;
-                let colPos = j;
+                let rowPos = row;
+                let colPos = col;
 
-                if(currentGameState[i][j]) {
-                    if(lastEncounteredVal && lastEncounteredVal === currentVal) {
+                if(currentGameState[row][col]) {
+                    if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
                         delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
-                            row: rowPos,
-                            col: colPos
+                            rowPos: rowPos,
+                            colPos: colPos
                         });
 
                         lastEncounteredVal = lastEncounteredVal + currentVal;
                         currentGameState[lastEncounteredValPos.row][lastEncounteredValPos.col] = lastEncounteredVal;
+                        lastValueMerged = true;
                     }
                     else {
                         if(emptyPosQueue.length) {
@@ -171,16 +162,15 @@ data_model = {
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
                             this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
 
-                            emptyPosQueue.push({
-                                row: i,
-                                col: j
-                            });
-
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
 
-                            currentGameState[i][j] = undefined;
-                            delete this.state.occupiedPositions[`${i}_${j}`];
+                            currentGameState[row][col] = undefined;
+                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            emptyPosQueue.push({
+                                rowPos: row,
+                                colPos: col
+                            });
                         }
 
                         
@@ -189,11 +179,12 @@ data_model = {
                             row: rowPos,
                             col: colPos
                         }
+                        lastValueMerged = false;
                     }
                     
                 }
                 else {
-                    emptyPosQueue.push({rowPos: i, colPos: j});
+                    emptyPosQueue.push({rowPos: row, colPos: col});
                 }
             }
         }
@@ -204,46 +195,48 @@ data_model = {
     */
     _mergeGameDown() {
         const currentGameState = this.state.game;
-        for(let i = 0; i < this.state.gameBoardSize; i++) {
+        for(let col = 0; col < this.state.gameBoardSize; col++) {
             let lastEncounteredVal = null;
             let lastEncounteredValPos = null;
             let emptyPosQueue = [];
+            let lastValueMerged = false;
 
-            for(let j = this.state.gameBoardSize - 1; j >= 0; j--) {
+            for(let row = this.state.gameBoardSize - 1; row >= 0; row--) {
                 
-                let currentVal = currentGameState[j][i];
-                let rowPos = j;
-                let colPos = i;
+                let currentVal = currentGameState[row][col];
+                let rowPos = row;
+                let colPos = col;
 
-                if(currentGameState[j][i]) {
-                    if(lastEncounteredVal && lastEncounteredVal === currentVal) {
+                if(currentGameState[row][col]) {
+                    if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
                         delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
-                            row: rowPos,
-                            col: colPos
+                            rowPos: rowPos,
+                            colPos: colPos
                         });
 
                         lastEncounteredVal = lastEncounteredVal + currentVal;
                         currentGameState[lastEncounteredValPos.row][lastEncounteredValPos.col] = lastEncounteredVal;
+                        lastValueMerged = true;
                     }
                     else {
                         if(emptyPosQueue.length) {
                             let pos = emptyPosQueue.shift();
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
                             this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
-                            
-                            emptyPosQueue.push({
-                                row: i,
-                                col: j
-                            });
 
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
     
-                            currentGameState[j][i] = undefined;
-                            delete this.state.occupiedPositions[`${j}_${i}`];
+                            currentGameState[row][col] = undefined;
+                            delete this.state.occupiedPositions[`${row}_${col}`];
+
+                            emptyPosQueue.push({
+                                rowPos: row,
+                                colPos: col
+                            });
                         }
 
                         
@@ -252,11 +245,12 @@ data_model = {
                             row: rowPos,
                             col: colPos
                         }
+                        lastValueMerged = false;
                     }
                     
                 }
                 else {
-                    emptyPosQueue.push({rowPos: j, colPos: i});
+                    emptyPosQueue.push({rowPos: row, colPos: col});
                 }
             }
         }
@@ -267,30 +261,32 @@ data_model = {
     */
     _mergeGameRight() {
         const currentGameState = this.state.game;
-        for(let i = 0; i < this.state.gameBoardSize; i++) {
+        for(let row = 0; row < this.state.gameBoardSize; row++) {
             let lastEncounteredVal = null;
             let lastEncounteredValPos = null;
             let emptyPosQueue = [];
+            let lastValueMerged = false;
 
-            for(let j = this.state.gameBoardSize - 1; j >= 0 ; j--) {
+            for(let col = this.state.gameBoardSize - 1; col >= 0 ; col--) {
                 
-                let currentVal = currentGameState[i][j];
+                let currentVal = currentGameState[row][col];
                 
-                let rowPos = i;
-                let colPos = j;
+                let rowPos = row;
+                let colPos = col;
 
-                if(currentGameState[i][j]) {
-                    if(lastEncounteredVal && lastEncounteredVal === currentVal) {
+                if(currentGameState[row][col]) {
+                    if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
                         delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
-                            row: rowPos,
-                            col: colPos
+                            rowPos: rowPos,
+                            colPos: colPos
                         });
 
                         lastEncounteredVal = lastEncounteredVal + currentVal;
                         currentGameState[lastEncounteredValPos.row][lastEncounteredValPos.col] = lastEncounteredVal;
+                        lastValueMerged = true;
                     }
                     else {
                         if(emptyPosQueue.length) {
@@ -298,16 +294,15 @@ data_model = {
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
                             this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
 
-                            emptyPosQueue.push({
-                                row: i,
-                                col: j
-                            });
-
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
 
-                            currentGameState[i][j] = undefined;
-                            delete this.state.occupiedPositions[`${i}_${j}`];
+                            currentGameState[row][col] = undefined;
+                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            emptyPosQueue.push({
+                                rowPos: row,
+                                colPos: col
+                            });
                         }
 
                         
@@ -316,14 +311,29 @@ data_model = {
                             row: rowPos,
                             col: colPos
                         }
+                        lastValueMerged = false;
                     }
                     
                 }
                 else {
-                    emptyPosQueue.push({rowPos: i, colPos: j});
+                    emptyPosQueue.push({rowPos: row, colPos: col});
                 }
             }
         }
+    },
+    /* 
+        @description: A function to check if there are any empty positions on the board
+        @returns {boolean}: True if empty postion present, false otherwise.
+    */
+    _isAnyEmptyPositionPresent() {
+        for(let row = 0; row < this.state.gameBoardSize; row++) {
+            for(let col = 0; col < this.state.gameBoardSize; col++) {
+                if(!this.state.game[row][col]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     },
     /* 
         @param {number} gameGoal:       The end goal of the game. Must be a power of 2. 
@@ -362,6 +372,68 @@ data_model = {
     */
     getGameGoal() {
         return this.state.gameGoal;
+    },
+    /* 
+        @description:               Random add twos and Fours to a random unoccupied location on the game board.
+        @return {undefined}
+    */
+    randomAddANumber() {
+        if(!this._isAnyEmptyPositionPresent()) {
+            return;
+        }
+        let {
+            col: randomUnOccupiedColumn,
+            row: randomUnOccupiedRow
+        } = this._getARandomUnOccupiedPosition();
+        let randomNumberToAdd = Math.ceil(Math.random() * 2) * 2;
+        this.state.game[randomUnOccupiedRow][randomUnOccupiedColumn] = randomNumberToAdd;
+        this.state.occupiedPositions[`${randomUnOccupiedRow}_${randomUnOccupiedColumn}`] = randomNumberToAdd;
+    },
+    /* 
+        @description:       A function to check if the user has already reached the goal.
+        @return {boolean}:  True if user has already reached the goal of game.
+    */
+    checkIfGameWon() {
+        for(let row = 0; row < this.state.gameBoardSize; row++) {
+            for(let col = 0; col < this.state.gameBoardSize; col++) {
+                if(this.state.game[row][col] === this.state.gameGoal) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    },
+    /* 
+        @description: A function to check if there is no next move possible.
+        @return {boolean}: True if no next move possible, false otherwise.
+    */
+    isNextMoveNotPossible() {
+        for(let row = 0; row < this.state.gameBoardSize; row++) {
+            for(let col = 0; col < this.state.gameBoardSize; col++) {
+                if(!this.state.game[row][col]) {
+                    return false;
+                }
+                else {
+                    if( 
+                        this.state.game[row + 1] && 
+                        this.state.game[row + 1][col] && 
+                        this.state.game[row + 1][col] === this.state.game[row][col]
+                    ) {
+                        return false;
+                    }
+
+                    if( 
+                        this.state.game[row] && 
+                        this.state.game[row][col + 1] && 
+                        this.state.game[row][col + 1] === this.state.game[row][col]
+                    ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 };
 
@@ -371,4 +443,7 @@ module.exports = {
     getGameState:   data_model.getGameState.bind(data_model),
     getGameGoal:    data_model.getGameGoal.bind(data_model),
     actions:        data_model.actions,
+    randomAddANumber: data_model.randomAddANumber.bind(data_model),
+    checkIfGameWon: data_model.checkIfGameWon.bind(data_model),
+    isNextMoveNotPossible: data_model.isNextMoveNotPossible.bind(data_model),
 }
