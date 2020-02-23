@@ -14,7 +14,7 @@ const user_input_interface = {
             prompt.get([{
                 name: "userMove",
                 required: true,
-                description: "Enter your next move:",
+                description: "Enter your next move and press enter:",
                 message: "Move can only be 1, 2, 3, and 4",
                 conform: (value) => {
                     return (
