@@ -12,8 +12,10 @@ const config = {
     getGameState:               gameDataModel.getGameState,
     performAction:              gameDataModel.performAction,
     renderGameBoard:            gameUI.renderGameBoard,
-    initiateUserInputInterface: userInputInterface.init,
-    actions:                    gameDataModel.actions
+    activateUserInputListener:  userInputInterface.activateInputListener,
+    notifyInvalidUserInput:     userInputInterface.notifyInvalidInput,
+    actions:                    gameDataModel.actions,
+    getGameGoal:                gameDataModel.getGameGoal
 };
 
 

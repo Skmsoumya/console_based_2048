@@ -2,6 +2,15 @@ const {errorHandler, errorTypes} = require("../utils/error_handler.module");
 
 const game_controller = {
     /* 
+        valid game inputs
+    */
+    validInputs: {
+        "TOP": "TOP",
+        "LEFT": "LEFT",
+        "BOTTOM": "BOTTOM",
+        "RIGHT": "RIGHT"
+    },
+    /* 
             @description:               Checks if the game goal is a valid power of 2.
             @param {number} gameGoal:   The number representing the game goal.
             @returns {boolean}:          True if the passed gameGoal is valid, false otherwise.
@@ -35,8 +44,10 @@ const game_controller = {
                 - @required {function} getGameState:      Function to get current game state.
                 - @required {function} performAction:     Function to perform an action on game state.
                 - @required {function} renderGameBoard:   Function to render the game board in UI.
-                - @required {function} initiateUserInputInterface: Function to initiate the user input interface.
-                - @required {function} actions:           A list of actions that can be performed on the board.
+                - @required {function} activateUserInputListener: Function to activate the user input listener.
+                - @required {function} notifyInvalidUserInput: Function to notify user about invalid input.
+                - @required {function} getGameGoal:     A function to get the game goal number.
+                - @required {object} actions:           A list of actions that can be performed on the board.
         @returns {undefined}
     */
     init({
@@ -46,8 +57,10 @@ const game_controller = {
         getGameState,
         performAction,
         renderGameBoard,
-        initiateUserInputInterface,
-        actions
+        activateUserInputListener,
+        notifyInvalidUserInput,
+        actions,
+        getGameGoal
     }) {
         if (
             !this._gameGoalValid(gameGoal) ||
@@ -56,7 +69,8 @@ const game_controller = {
             !(getGameState && typeof getGameState === "function") ||
             !(performAction && typeof performAction === "function") ||
             !(renderGameBoard && typeof renderGameBoard === "function") ||
-            !(initiateUserInputInterface && typeof initiateUserInputInterface === "function") ||
+            !(activateUserInputListener && typeof activateUserInputListener === "function") ||
+            !(notifyInvalidUserInput && typeof notifyInvalidUserInput === "function") ||
             !(actions && typeof actions === "object")
         ) {
             errorTypes.INVALID_PARAMS();
@@ -65,18 +79,48 @@ const game_controller = {
         this.getGameState = getGameState;
         this.performAction = performAction;
         this.actions = actions;
+        this.getGameGoal = getGameGoal;
+        this.activateUserInputListener = activateUserInputListener;
+        this.notifyInvalidUserInput = notifyInvalidUserInput;
+        this.renderGameBoard = renderGameBoard;
         
         initiateDataModel(gameGoal, parseInt(gameBoardSize[0]));
-        initiateUserInputInterface(this.handleUserInput.bind(this));
-        renderGameBoard(getGameState(), gameGoal);
+        this._nextTurn();
+    },
+    /* 
+        @description: Set the game for the next turn
+        @return {undefined}
+    */
+    _nextTurn() {
+        this.renderGameBoard(this.getGameState(), this.getGameGoal());
+        this.activateUserInputListener(this.handleUserInput.bind(this), this.validInputs);
     },
     /* 
         @description: A callback function for handling user input.
-        @param {string} userInput: The user input registered.
+        @param {string} userInput: The user input registered. Can be "TOP", "LEFT", "BOTTOM", and "RIGHT" based on the users
         @returns {undefined}
     */
     handleUserInput(userInput) {
+        switch (userInput) {
+            case "TOP":
+                this.performAction(this.actions.UP);
+                break;
+            case "BOTTOM":
+                this.performAction(this.actions.DOWN);
+                break;
+            case "LEFT":
+                this.performAction(this.actions.LEFT);
+                break;
+            case "RIGHT":
+                this.performAction(this.actions.RIGHT);
+                break;
+        
+            default:
+                console.log("Invalid Input");
+                break;
+        }
 
+        this._nextTurn();
     }
 };
 

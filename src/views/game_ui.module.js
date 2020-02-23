@@ -33,15 +33,6 @@ const game_ui = {
         ---------
         Join the numbers and get to ${gameGoal} tile!
 
-        --------
-
-        How To Play:
-
-        Use the keys 1,2,3,4 to move the tiles. When two tiles 
-        of same number touch, they merge into one!
-
-        --------
-        
         Your Game Board:
 
         ${this._getDecoratedGameBoard(gameState)}
