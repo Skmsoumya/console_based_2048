@@ -3,7 +3,7 @@ data_model = {
         gameBoardSize: null,            // A number representing the row/column size of the board.
         gameGoal: null,                 // A number representing the end goal number of the game. Must be a power of 2. 
         game: null,                     // The game board state.
-        occupiedPositions: {}           // Map of all occupied positions of the game board. Properties in row_col format
+        // occupiedPositions: {}           // Map of all occupied positions of the game board. Properties in row_col format
     },
     actions: {
         "UP": "MERGE_UP",
@@ -40,7 +40,8 @@ data_model = {
         let col = Math.floor(Math.random() * this.state.gameBoardSize);
         let row = Math.floor(Math.random() * this.state.gameBoardSize);
         
-        if(this.state.occupiedPositions.hasOwnProperty(`${row}_${col}`)) {
+        // if(this.state.occupiedPositions.hasOwnProperty(`${row}_${col}`)) {
+        if(this.state.game[row][col]) {
             return this._getARandomUnOccupiedPosition();
         }
         else {
@@ -78,7 +79,7 @@ data_model = {
 
                 if(currentGameState[row][col]) {
                     if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
-                        delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
+                        // delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
@@ -94,13 +95,13 @@ data_model = {
                         if(emptyPosQueue.length) {
                             let pos = emptyPosQueue.shift();
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
-                            this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
+                            // this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
 
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
     
                             currentGameState[row][col] = undefined;
-                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            // delete this.state.occupiedPositions[`${row}_${col}`];
                             emptyPosQueue.push({
                                 rowPos: row,
                                 colPos: col
@@ -144,7 +145,7 @@ data_model = {
 
                 if(currentGameState[row][col]) {
                     if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
-                        delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
+                        // delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
@@ -160,13 +161,13 @@ data_model = {
                         if(emptyPosQueue.length) {
                             let pos = emptyPosQueue.shift();
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
-                            this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
+                            // this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
 
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
 
                             currentGameState[row][col] = undefined;
-                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            // delete this.state.occupiedPositions[`${row}_${col}`];
                             emptyPosQueue.push({
                                 rowPos: row,
                                 colPos: col
@@ -209,7 +210,7 @@ data_model = {
 
                 if(currentGameState[row][col]) {
                     if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
-                        delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
+                        // delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
@@ -225,13 +226,13 @@ data_model = {
                         if(emptyPosQueue.length) {
                             let pos = emptyPosQueue.shift();
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
-                            this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
+                            // this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
 
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
     
                             currentGameState[row][col] = undefined;
-                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            // delete this.state.occupiedPositions[`${row}_${col}`];
 
                             emptyPosQueue.push({
                                 rowPos: row,
@@ -276,7 +277,7 @@ data_model = {
 
                 if(currentGameState[row][col]) {
                     if(lastEncounteredVal && !lastValueMerged && lastEncounteredVal === currentVal) {
-                        delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
+                        // delete this.state.occupiedPositions[`${rowPos}_${colPos}`];
                         currentGameState[rowPos][colPos] = undefined;
 
                         emptyPosQueue.push({
@@ -292,13 +293,13 @@ data_model = {
                         if(emptyPosQueue.length) {
                             let pos = emptyPosQueue.shift();
                             currentGameState[pos.rowPos][pos.colPos] = currentVal;
-                            this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
+                            // this.state.occupiedPositions[`${pos.rowPos}_${pos.colPos}`] = currentVal;
 
                             rowPos = pos.rowPos;
                             colPos = pos.colPos;
 
                             currentGameState[row][col] = undefined;
-                            delete this.state.occupiedPositions[`${row}_${col}`];
+                            // delete this.state.occupiedPositions[`${row}_${col}`];
                             emptyPosQueue.push({
                                 rowPos: row,
                                 colPos: col
@@ -345,7 +346,7 @@ data_model = {
         this.state.gameGoal = gameGoal;
         this.state.gameBoardSize = gameBoardSize;
         this.state.game = this._getAInitialGameMatrix(this.state.gameBoardSize);
-        this.state.occupiedPositions = {};
+        // this.state.occupiedPositions = {};
 
         this._addInitialNumbers();
     },
@@ -387,7 +388,7 @@ data_model = {
         } = this._getARandomUnOccupiedPosition();
         let randomNumberToAdd = Math.ceil(Math.random() * 2) * 2;
         this.state.game[randomUnOccupiedRow][randomUnOccupiedColumn] = randomNumberToAdd;
-        this.state.occupiedPositions[`${randomUnOccupiedRow}_${randomUnOccupiedColumn}`] = randomNumberToAdd;
+        // this.state.occupiedPositions[`${randomUnOccupiedRow}_${randomUnOccupiedColumn}`] = randomNumberToAdd;
     },
     /* 
         @description:       A function to check if the user has already reached the goal.
